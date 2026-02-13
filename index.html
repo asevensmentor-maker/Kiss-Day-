@@ -16,11 +16,7 @@ body{
   align-items:center;
   overflow:hidden;
 }
-.screen{
-  display:none;
-  text-align:center;
-  padding:20px;
-}
+.screen{display:none;text-align:center;padding:20px}
 .active{display:block}
 
 h1{color:#ff2f7d}
@@ -43,6 +39,213 @@ button:hover{transform:scale(1.08)}
   font-size:100px;
   margin-bottom:20px;
   animation:float 2s infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+/* Floating hearts */
+.heart{
+  position:fixed;
+  top:-20px;
+  font-size:26px;
+  animation:fall 6s linear infinite;
+}
+@keyframes fall{
+  from{top:-10%}
+  to{top:110%}
+}
+
+/* Game */
+.game{
+  position:relative;
+  width:90vw;
+  height:60vh;
+  background:rgba(255,255,255,.5);
+  border-radius:20px;
+  overflow:hidden;
+}
+.kiss{
+  position:absolute;
+  font-size:40px;
+  cursor:pointer;
+  animation:floatUp 6s linear;
+}
+@keyframes floatUp{
+  from{top:100%}
+  to{top:-50px}
+}
+.top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-weight:bold;
+}
+
+/* Popup */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+.popup-content{
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  max-width:90%;
+  text-align:center;
+  animation:pop .5s ease;
+}
+@keyframes pop{
+  from{transform:scale(.6);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND HEARTS -->
+<script>
+for(let i=0;i<12;i++){
+  const h=document.createElement('div');
+  h.className='heart';
+  h.innerText='💖';
+  h.style.left=Math.random()*100+'%';
+  h.style.animationDelay=Math.random()*5+'s';
+  document.body.appendChild(h);
+}
+</script>
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="s1">
+  <div class="emoji">🤗</div>
+  <h1>I have a surprise for you 💝</h1>
+  <button onclick="go(2)">What? 👀</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen" id="s2">
+  <div class="emoji">🐻 🐼</div>
+  <h1>Unlimited kisses for you 😘</h1>
+  <button onclick="go(3)">Next 💗</button>
+</div>
+
+<!-- SCREEN 3 -->
+<div class="screen" id="s3">
+  <div class="emoji" id="char">😊</div>
+  <h1>Catch the Kiss!</h1>
+  <p>Catch 10 kisses to unlock something special 💋</p>
+  <button onclick="startGame()">Start Playing 💞</button>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="game">
+  <div class="top">
+    <div>💋 <span id="count">0</span>/10</div>
+    <div>⏱ <span id="time">0</span>s</div>
+  </div>
+  <div class="game" id="area"></div>
+</div>
+
+<!-- FINAL -->
+<div class="screen" id="final">
+  <div class="emoji">🎉</div>
+  <h1>You Did It!</h1>
+  <p>Happy Kiss Day 💋💖</p>
+  <button onclick="showPopup()">Open Surprise 💌</button>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h1>My Love 💗</h1>
+    <p>
+      My love,<br>
+      even on the days when you feel tired or low,<br>
+      I want you to know you are never alone.<br><br>
+      My heart stays right next to yours,<br>
+      holding you gently until you feel strong again.<br><br>
+      I’m here… always. 💗
+    </p>
+    <button onclick="closePopup()">Close 🤍</button>
+  </div>
+</div>
+
+<script>
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+}
+
+let count=0,time=0,spawn,timer;
+const area=document.getElementById('area');
+const char=document.getElementById('char');
+const countEl=document.getElementById('count');
+const timeEl=document.getElementById('time');
+
+function startGame(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('game').classList.add('active');
+
+  timer=setInterval(()=>{time++;timeEl.innerText=time},1000);
+  spawn=setInterval(makeKiss,800);
+}
+
+function makeKiss(){
+  const k=document.createElement('div');
+  k.className='kiss';
+  k.innerText='💋';
+  k.style.left=Math.random()*85+'%';
+
+  k.onclick=()=>{
+    k.remove();
+    count++;
+    countEl.innerText=count;
+    char.innerText='😍';
+    setTimeout(()=>char.innerText='😊',500);
+    if(count===10) endGame();
+  };
+
+  area.appendChild(k);
+  setTimeout(()=>k.remove(),6000);
+}
+
+function endGame(){
+  clearInterval(spawn);
+  clearInterval(timer);
+
+  document.getElementById('game').classList.remove('active');
+  document.getElementById('final').classList.add('active');
+
+  // Confetti
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.innerText='🎉';
+    c.style.position='fixed';
+    c.style.left=Math.random()*100+'%';
+    c.style.top='-20px';
+    c.style.fontSize='30px';
+    c.style.animation='fall 3s linear';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+function showPopup(){
+  document.getElementById('popup').style.display='flex';
+}
+function closePopup(){
+  document.getElementById('popup').style.display='none';
+}
+</script>
+
+</body>
+</html>  animation:float 2s infinite;
 }
 @keyframes float{
   0%,100%{transform:translateY(0)}

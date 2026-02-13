@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Catch the Kiss 💋</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{
+  margin:0;
+  background:radial-gradient(circle,#ffe6f0,#ffc1d9);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
+.screen{
+  display:none;
+  text-align:center;
+  width:100%;
+  height:100%;
+  padding:20px;
+}
+.active{display:flex;flex-direction:column;justify-content:center;align-items:center}
+
+button{
+  background:linear-gradient(45deg,#ff4f9a,#ff85b3);
+  border:none;
+  padding:15px 30px;
+  color:white;
+  font-size:18px;
+  border-radius:30px;
+  cursor:pointer;
+  box-shadow:0 10px 20px rgba(255,79,154,.4);
+}
+h1{color:#ff2f7d}
+p{color:#444}
+
+.heart{
+  font-size:100px;
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+}
+
+.game-area{
+  position:relative;
+  width:100%;
+  height:70vh;
+  background:rgba(255,255,255,.4);
+  border-radius:20px;
+  overflow:hidden;
+}
+.kiss{
+  position:absolute;
+  font-size:40px;
+  cursor:pointer;
+  animation:float 6s linear;
+}
+@keyframes float{
+  from{top:100%}
+  to{top:-50px}
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  width:100%;
+  padding:10px 20px;
+  font-weight:bold;
+}
+
+.final{
+  font-size:22px;
+  color:#ff2f7d;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="screen1">
+  <div class="heart">💋</div>
+  <h1>Catch the Kiss!</h1>
+  <p>Catch 10 kisses to win a special surprise 💖</p>
+  <button onclick="go(2)">Start Playing 💕</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen" id="screen2">
+  <div class="heart">🐻🐼</div>
+  <h1>Unlimited kisses for you 😘</h1>
+  <button onclick="go(3)">Next 💗</button>
+</div>
+
+<!-- SCREEN 3 -->
+<div class="screen" id="screen3">
+  <div class="heart">🤗</div>
+  <h1>I have a surprise for you 💝</h1>
+  <button onclick="startGame()">What? 👀</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div class="screen" id="game">
+  <div class="topbar">
+    <div>💋 <span id="count">0</span>/10</div>
+    <div>⏱ <span id="time">0</span>s</div>
+  </div>
+  <div class="game-area" id="area"></div>
+</div>
+
+<!-- FINAL SCREEN -->
+<div class="screen" id="final">
+  <div class="heart">🎉</div>
+  <h1>You Did It!</h1>
+  <p class="final">Happy Kiss Day 💋💖</p>
+  <p>You caught all kisses in <b><span id="finalTime"></span> seconds</b></p>
+  <button onclick="location.reload()">Play Again 🔁</button>
+</div>
+
+<script>
+let current=1,count=0,time=0,interval,timer;
+
+function go(n){
+  document.getElementById(`screen${current}`).classList.remove('active');
+  current=n;
+  document.getElementById(`screen${current}`).classList.add('active');
+}
+
+function startGame(){
+  document.getElementById('screen3').classList.remove('active');
+  document.getElementById('game').classList.add('active');
+
+  timer=setInterval(()=>{time++;document.getElementById('time').innerText=time},1000);
+
+  interval=setInterval(createKiss,800);
+}
+
+function createKiss(){
+  const kiss=document.createElement('div');
+  kiss.className='kiss';
+  kiss.innerText='💋';
+  kiss.style.left=Math.random()*90+'%';
+
+  kiss.onclick=()=>{
+    kiss.remove();
+    count++;
+    document.getElementById('count').innerText=count;
+    if(count===10) endGame();
+  };
+
+  document.getElementById('area').appendChild(kiss);
+  setTimeout(()=>kiss.remove(),6000);
+}
+
+function endGame(){
+  clearInterval(interval);
+  clearInterval(timer);
+  document.getElementById('game').classList.remove('active');
+  document.getElementById('final').classList.add('active');
+  document.getElementById('finalTime').innerText=time;
+}
+</script>
+
+</body>
+</html>

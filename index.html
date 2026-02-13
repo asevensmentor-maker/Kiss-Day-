@@ -167,7 +167,8 @@ for(let i=0;i<15;i++){
 <!-- POPUP MESSAGE -->
 <div class="popup" id="popup">
   <div class="popup-content">
-    <h1>My Love 💗</h1>
+    <h1>My Love 💗Happy Kiss Day 💋💖
+    </h1>
     <p>
       My love,<br>
       even on the days when you feel tired or low,<br>
@@ -227,16 +228,14 @@ function endGame(){
   document.getElementById('final').classList.add('active');
 
   // Confetti
-  for(let i=0;i<50;i++){
-    const c=document.createElement('div');
-    c.innerText='🎉';
-    c.style.position='fixed';
-    c.style.left=Math.random()*100+'%';
-    c.style.top='-20px';
-    c.style.fontSize='30px';
-    c.style.animation='fall 3s linear';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
+  for(let i=0;i<15;i++){
+  let h=document.createElement('div');
+  h.className='heart';
+  h.innerText='🎉😘';
+  h.style.left=Math.random()*100+'%';
+  h.style.animationDelay=Math.random()*5+'s';
+  document.body.appendChild(h);
+}
   }
 }
 
